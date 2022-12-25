@@ -1,0 +1,130 @@
+#region 5            
+int n = 5, k = 2;
+int[,] matrix = CreateMatrix(n, n);
+int local_max = 0;
+(int row_index, int column_index) max_index = (0, 0);
+for (int row_index = 0; row_index < matrix.GetLength(0); row_index++)
+    for (int column_index = 0; column_index < matrix.GetLength(1); column_index++)
+    {
+        if (Math.Abs(matrix[row_index, column_index]) > local_max)
+        {
+            local_max = Math.Abs(matrix[row_index, column_index]);
+            max_index = (row_index, column_index);
+        }
+    }
+
+matrix[max_index.row_index, max_index.column_index] = 1000;
+ShowMatrix(matrix);
+
+int temp;
+if (max_index.row_index >= k && max_index.column_index >= k)
+{
+    for (int column_index = max_index.column_index; column_index > k; column_index--)
+        for (int row_index = 0; row_index < n; row_index++)
+        {
+            temp = matrix[row_index, column_index];
+            matrix[row_index, column_index] = matrix[row_index, column_index - 1];
+            matrix[row_index, column_index - 1] = temp;
+        }
+
+    for (int row_index = max_index.row_index; row_index > k; row_index--)
+        for (int column_index = 0; column_index < n; column_index++)
+        {
+            temp = matrix[row_index, column_index];
+            matrix[row_index, column_index] = matrix[row_index - 1, column_index];
+            matrix[row_index - 1, column_index] = temp;
+        }
+}
+else if (max_index.row_index <= k && max_index.column_index <= k)
+{
+    for (int column_index = max_index.column_index; column_index < k; column_index++)
+        for (int row_index = 0; row_index < n; row_index++)
+        {
+            temp = matrix[row_index, column_index];
+            matrix[row_index, column_index] = matrix[row_index, column_index + 1];
+            matrix[row_index, column_index + 1] = temp;
+        }
+
+    for (int row_index = max_index.row_index; row_index < k; row_index++)
+        for (int column_index = 0; column_index < n; column_index++)
+        {
+            temp = matrix[row_index, column_index];
+            matrix[row_index, column_index] = matrix[row_index + 1, column_index];
+            matrix[row_index + 1, column_index] = temp;
+        }
+}
+else if (max_index.row_index <= k && max_index.column_index >= k)
+{
+    for (int column_index = max_index.column_index; column_index > k; column_index--)
+        for (int row_index = 0; row_index < n; row_index++)
+        {
+            temp = matrix[row_index, column_index];
+            matrix[row_index, column_index] = matrix[row_index, column_index - 1];
+            matrix[row_index, column_index - 1] = temp;
+        }
+    for (int row_index = max_index.row_index; row_index < k; row_index++)
+        for (int column_index = 0; column_index < n; column_index++)
+        {
+            temp = matrix[row_index, column_index];
+            matrix[row_index, column_index] = matrix[row_index + 1, column_index];
+            matrix[row_index + 1, column_index] = temp;
+        }
+}
+else if (max_index.row_index >= k && max_index.column_index <= k)
+{
+    for (int column_index = max_index.column_index; column_index < k; column_index++)
+        for (int row_index = 0; row_index < n; row_index++)
+        {
+            temp = matrix[row_index, column_index];
+            matrix[row_index, column_index] = matrix[row_index, column_index + 1];
+            matrix[row_index, column_index + 1] = temp;
+        }
+    for (int row_index = max_index.row_index; row_index > k; row_index--)
+        for (int column_index = 0; column_index < n; column_index++)
+        {
+            temp = matrix[row_index, column_index];
+            matrix[row_index, column_index] = matrix[row_index - 1, column_index];
+            matrix[row_index - 1, column_index] = temp;
+        }               
+}
+ShowMatrix(matrix);
+#endregion
+
+
+#region 9
+int[,] matrix = CreateMatrix(5, 7);
+var dict = new Dictionary<int, int>();
+int negative_amount;
+for (int column_index = 0; column_index < matrix.GetLength(1); column_index++)
+{
+    negative_amount = 0;
+    for (int row_index = 0; row_index < matrix.GetLength(0); row_index++)
+        if (matrix[row_index, column_index] > 0)
+            negative_amount++;
+
+    dict.Add(column_index, negative_amount);
+}
+
+int[] column_indexes = new int[matrix.GetLength(1)];
+for (int i = 0; i < column_indexes.Length; i++)
+{
+    int min = dict.Values.Max();
+    column_indexes[i] = dict.FirstOrDefault(x => x.Value == min).Key;
+    dict.Remove(column_indexes[i]);
+}
+
+int column_index1;
+int[,] tempMatrix = new int[matrix.GetLength(0), matrix.GetLength(1)];
+for (int column_index = 0; column_index < matrix.GetLength(1); column_index++)
+{
+    column_index1 = column_indexes[column_index];
+    for (int row_index = 0; row_index < matrix.GetLength(0); row_index++)
+        tempMatrix[row_index, column_index] = matrix[row_index, column_index1];
+}
+
+for (int row_index = 0; row_index < matrix.GetLength(0); row_index++)
+    for (int column_index = 0; column_index < matrix.GetLength(1); column_index++)
+        matrix[row_index, column_index] = tempMatrix[row_index, column_index];
+
+ShowMatrix(matrix);
+#endregion
